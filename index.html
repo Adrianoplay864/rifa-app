@@ -84,6 +84,7 @@
         background: #3498db;
         color: white;
         border: none;
+        cursor: pointer;
       }
 
       .whatsapp {
@@ -109,7 +110,10 @@
     <div class="container">
       <div class="info">
         <h1>Rifa Fundação Esperança</h1>
-        <p><b>Sorteio:</b> Ao vivo pelo TikTok em 30/09/2026</p>
+        <p>
+          <b>Sorteio:</b> Ao vivo pelo TikTok em 30/09/2026
+          <b>@fundacion__esperanza</b>
+        </p>
         <p>
           <strong>Prêmios:<br />1° - R$ 5.000<br />2° - R$ 2.000</strong>
         </p>
@@ -125,7 +129,7 @@
         <h3 id="numeroSelecionado"></h3>
 
         <input id="nome" placeholder="Nome" />
-        <input id="telefone" placeholder="Telefone" />
+        <input id="telefone" placeholder="Telefone (sem código país)" />
         <input id="valor" type="number" placeholder="Adicionar pagamento" />
 
         <div class="info-valores" id="totalPago"></div>
@@ -151,7 +155,7 @@
       } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
       const firebaseConfig = {
-        apiKey: "AIzaSyCkuWF4GInXQMRm7iGdLC-psSLASmKvS84",
+        apiKey: "SUA_API_KEY",
         authDomain: "rifa-fundacion.firebaseapp.com",
         projectId: "rifa-fundacion",
         storageBucket: "rifa-fundacion.firebasestorage.app",
@@ -276,15 +280,24 @@
           return;
         }
 
-        let msg = `Rifa Fundação Esperança
+        let msg = `🎟️ Rifa Fundação Esperança
+
 Número: ${numeroAtual}
 Nome: ${d.nome || ""}
 Telefone: ${d.telefone}
-Total pago: R$ ${d.valor || 0}
-Falta: R$ ${Math.max(0, VALOR_TOTAL - (d.valor || 0))}`;
+
+💰 Total pago: R$ ${d.valor || 0}
+❗ Falta: R$ ${Math.max(0, VALOR_TOTAL - (d.valor || 0))}
+
+🎉 Sorteio:
+📅 Data: 30/09/2026
+📲 Ao vivo pelo TikTok
+👉 @fundacion__esperanza
+
+Boa sorte! 🍀`;
 
         window.open(
-          `https://wa.me/55${d.telefone}?text=${encodeURIComponent(msg)}`
+          `https://wa.me/57${d.telefone}?text=${encodeURIComponent(msg)}`
         );
       }
 
