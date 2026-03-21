@@ -56,7 +56,7 @@
         position: fixed;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.4);
+        background: rgba(0, 0, 0, 0.4);
         top: 0;
         left: 0;
       }
@@ -69,15 +69,25 @@
         max-width: 350px;
       }
 
-      input, button {
+      input,
+      button {
         width: 100%;
         padding: 10px;
         margin: 6px 0;
       }
 
-      .whatsapp { background: #25d366; color:white; }
-      .cancelar { background: #e74c3c; color:white; }
-      .zerar { background: #555; color:white; }
+      .whatsapp {
+        background: #25d366;
+        color: white;
+      }
+      .cancelar {
+        background: #e74c3c;
+        color: white;
+      }
+      .zerar {
+        background: #555;
+        color: white;
+      }
     </style>
   </head>
 
@@ -89,7 +99,10 @@
         <button onclick="login()">Login com Google</button>
         <button onclick="logout()">Sair</button>
 
-        <p><b>Sorteio:</b> 30/09/2026</p>
+        <p>
+          <b>Sorteio:</b> sera realizado no dia 30/09/2026 ao vivo no TikTok<br />@fundacion__esperanza
+        </p>
+        <p><b>Premios:</b><br />1° - 5000 R$<br />2° - 2000R$</p>
         <p><b>Valor:</b> R$ 25</p>
       </div>
 
@@ -116,7 +129,12 @@
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
       import {
-        getFirestore, doc, setDoc, getDocs, deleteDoc, collection
+        getFirestore,
+        doc,
+        setDoc,
+        getDocs,
+        deleteDoc,
+        collection,
       } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
       import {
@@ -124,7 +142,7 @@
         signInWithPopup,
         GoogleAuthProvider,
         signOut,
-        onAuthStateChanged
+        onAuthStateChanged,
       } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
       const firebaseConfig = {
@@ -174,87 +192,112 @@
       let dados = {};
 
       function formatar(v) {
-        return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+        return v.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
       }
 
       for (let i = 0; i <= 999; i++) {
         let n = document.createElement("div");
-        n.textContent = String(i).padStart(2,"0");
+        n.textContent = String(i).padStart(2, "0");
         n.classList.add("numero");
         n.onclick = () => abrir(n.textContent);
         rifa.appendChild(n);
       }
 
       async function carregar() {
-        const snap = await getDocs(collection(db,"rifa"));
-        snap.forEach(d => dados[d.id] = d.data());
+        const snap = await getDocs(collection(db, "rifa"));
+        snap.forEach((d) => (dados[d.id] = d.data()));
         atualizarTela();
       }
 
       function atualizarTela() {
-        document.querySelectorAll(".numero").forEach(n => {
+        document.querySelectorAll(".numero").forEach((n) => {
           let d = dados[n.textContent];
-          n.classList.remove("pago","pendente");
-          if(d) n.classList.add(d.estado);
+          n.classList.remove("pago", "pendente");
+          if (d) n.classList.add(d.estado);
         });
       }
 
       function abrir(num) {
         numeroAtual = num;
-        modal.style.display="block";
+        modal.style.display = "block";
         numeroSelecionado.innerText = "Número " + num;
 
-        let d = dados[num]||{};
-        nome.value = d.nome||"";
-        telefone.value = d.telefone||"";
-        valor.value="";
+        let d = dados[num] || {};
+        nome.value = d.nome || "";
+        telefone.value = d.telefone || "";
+        valor.value = "";
         atualizarValores();
       }
 
       valor.oninput = atualizarValores;
 
       function atualizarValores() {
-        let total = dados[numeroAtual]?.valor||0;
-        let digitado = parseFloat(valor.value)||0;
-        let novo = total+digitado;
+        let total = dados[numeroAtual]?.valor || 0;
+        let digitado = parseFloat(valor.value) || 0;
+        let novo = total + digitado;
 
-        totalPago.innerText="Total: "+formatar(novo);
-        faltante.innerText="Falta: "+formatar(Math.max(0,25-novo));
+        totalPago.innerText = "Total: " + formatar(novo);
+        faltante.innerText = "Falta: " + formatar(Math.max(0, 25 - novo));
       }
 
       window.salvar = async () => {
-        if(!usuarioLogado) return alert("Só admin");
+        if (!usuarioLogado) return alert("Só admin");
 
-        let antigo = dados[numeroAtual]||{};
-        let total = (antigo.valor||0)+(parseFloat(valor.value)||0);
+        let antigo = dados[numeroAtual] || {};
+        let total = (antigo.valor || 0) + (parseFloat(valor.value) || 0);
 
         let novo = {
-          nome: nome.value||antigo.nome||"",
-          telefone: telefone.value||antigo.telefone||"",
+          nome: nome.value || antigo.nome || "",
+          telefone: telefone.value || antigo.telefone || "",
           valor: total,
-          estado: total>=25?"pago":"pendente"
+          estado: total >= 25 ? "pago" : "pendente",
         };
 
-        await setDoc(doc(db,"rifa",numeroAtual),novo);
-        dados[numeroAtual]=novo;
+        await setDoc(doc(db, "rifa", numeroAtual), novo);
+        dados[numeroAtual] = novo;
         atualizarTela();
         fechar();
       };
 
       window.zerarNumero = async () => {
-        if(!usuarioLogado) return alert("Só admin");
+        if (!usuarioLogado) return alert("Só admin");
 
-        await deleteDoc(doc(db,"rifa",numeroAtual));
+        await deleteDoc(doc(db, "rifa", numeroAtual));
         delete dados[numeroAtual];
         atualizarTela();
         fechar();
       };
 
-      window.fechar = () => modal.style.display="none";
+      window.fechar = () => (modal.style.display = "none");
 
       window.enviarWhats = () => {
-        let d = dados[numeroAtual]||{};
-        window.open(`https://wa.me/55${d.telefone}?text=Número ${numeroAtual}`);
+        let d = dados[numeroAtual] || {};
+
+        let mensagem = `🎟️ *Rifa Fundação Esperança*
+
+📌 *Número:* ${numeroAtual}
+👤 *Nome:* ${d.nome || "-"}
+📱 *Telefone:* ${d.telefone || "-"}
+
+💰 *Valor do número:* R$ 25
+💵 *Total pago:* ${formatar(d.valor || 0)}
+❗ *Falta pagar:* ${formatar(Math.max(0, 25 - (d.valor || 0)))}
+
+🎁 *Prêmios:*
+1° - R$ 5.000
+2° - R$ 2.000
+
+📅 *Sorteio:*
+30/09/2026 ao vivo no TikTok
+@fundacion__esperanza
+
+🙏 Boa sorte e obrigado por participar!`;
+
+        let url = `https://wa.me/55${d.telefone}?text=${encodeURIComponent(mensagem)}`;
+        window.open(url);
       };
 
       carregar();
