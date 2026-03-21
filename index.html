@@ -64,12 +64,11 @@
       .modal-content {
         background: white;
         padding: 20px;
-        margin: 15% auto;
+        margin: 10% auto;
         border-radius: 10px;
         max-width: 350px;
       }
 
-      /* SOLUÇÃO: adicione isso */
       *,
       *::before,
       *::after {
@@ -86,6 +85,7 @@
         font-size: 16px;
         font-weight: 600;
         font-family: inherit;
+        cursor: pointer;
       }
 
       input {
@@ -118,16 +118,29 @@
         <button onclick="login()">Login com Google</button>
         <button onclick="logout()">Sair</button>
 
+        <!-- BOTÃO ADMIN -->
+        <button id="verLista" onclick="abrirLista()" style="display: none">
+          Ver Compradores
+        </button>
+
         <p>
-          <b>Sorteio:</b> sera realizado no dia 30/09/2026 ao vivo no TikTok<br />@fundacion__esperanza
+          <b>Sorteio:</b> sera realizado no dia 30/09/2026 ao vivo no TikTok<br />
+          @fundacion__esperanza
         </p>
-        <p><b>Premios:</b><br />1° - 5000 R$<br />2° - 2000R$</p>
+
+        <p>
+          <b>Premios:</b><br />
+          1° - 5000 R$<br />
+          2° - 2000R$
+        </p>
+
         <p><b>Valor:</b> R$ 25</p>
       </div>
 
       <div class="grid" id="rifa"></div>
     </div>
 
+    <!-- MODAL COMPRA -->
     <div class="modal" id="modal">
       <div class="modal-content">
         <h3 id="numeroSelecionado"></h3>
@@ -142,6 +155,18 @@
         <button class="whatsapp" onclick="enviarWhats()">WhatsApp</button>
         <button class="cancelar" onclick="fechar()">Cancelar</button>
         <button class="zerar" onclick="zerarNumero()">Liberar</button>
+      </div>
+    </div>
+
+    <!-- MODAL LISTA -->
+    <div class="modal" id="modalLista">
+      <div class="modal-content" style="max-width: 600px">
+        <h3>Lista de Compradores</h3>
+        <div
+          id="listaCompradores"
+          style="text-align: left; max-height: 400px; overflow: auto"
+        ></div>
+        <button onclick="fecharLista()">Fechar</button>
       </div>
     </div>
 
@@ -182,12 +207,15 @@
 
       let usuarioLogado = false;
 
+      const btnLista = document.getElementById("verLista");
+
       onAuthStateChanged(auth, (user) => {
         if (user && user.email === ADMIN_EMAIL) {
           usuarioLogado = true;
-          console.log("Admin logado:", user.email);
+          btnLista.style.display = "block";
         } else {
           usuarioLogado = false;
+          btnLista.style.display = "none";
           if (user) alert("Você não é administrador");
         }
       });
@@ -198,7 +226,6 @@
           alert("Logado como: " + result.user.email);
         } catch (error) {
           alert("Erro no login");
-          console.error(error);
         }
       };
 
@@ -317,6 +344,40 @@
 
         let url = `https://wa.me/55${d.telefone}?text=${encodeURIComponent(mensagem)}`;
         window.open(url);
+      };
+
+      // LISTA DE COMPRADORES
+      const modalLista = document.getElementById("modalLista");
+      const listaCompradores = document.getElementById("listaCompradores");
+
+      window.abrirLista = () => {
+        if (!usuarioLogado) return alert("Só admin");
+
+        listaCompradores.innerHTML = "";
+
+        Object.keys(dados).forEach((num) => {
+          let d = dados[num];
+
+          let item = document.createElement("div");
+          item.style.padding = "10px";
+          item.style.borderBottom = "1px solid #ddd";
+
+          item.innerHTML = `
+            <b>Número:</b> ${num}<br>
+            <b>Nome:</b> ${d.nome || "-"}<br>
+            <b>Telefone:</b> ${d.telefone || "-"}<br>
+            <b>Total Pago:</b> ${formatar(d.valor || 0)}<br>
+            <b>Status:</b> ${d.estado}
+          `;
+
+          listaCompradores.appendChild(item);
+        });
+
+        modalLista.style.display = "block";
+      };
+
+      window.fecharLista = () => {
+        modalLista.style.display = "none";
       };
 
       carregar();
