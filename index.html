@@ -276,12 +276,18 @@
           return;
         }
 
-        let msg = `Rifa Fundação Esperança
+        let msg = `Rifa Fundação Esperança 🎉
+
 Número: ${numeroAtual}
 Nome: ${d.nome || ""}
 Telefone: ${d.telefone}
+
 Total pago: R$ ${d.valor || 0}
-Falta: R$ ${Math.max(0, VALOR_TOTAL - (d.valor || 0))}`;
+Falta: R$ ${Math.max(0, VALOR_TOTAL - (d.valor || 0))}
+
+📅 Sorteio: 30/09/2026
+📲 Ao vivo pelo TikTok
+👤 @fundacion__esperanza`;
 
         window.open(
           `https://wa.me/55${d.telefone}?text=${encodeURIComponent(msg)}`
