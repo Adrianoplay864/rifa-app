@@ -84,7 +84,6 @@
         background: #3498db;
         color: white;
         border: none;
-        cursor: pointer;
       }
 
       .whatsapp {
@@ -129,7 +128,7 @@
         <h3 id="numeroSelecionado"></h3>
 
         <input id="nome" placeholder="Nome" />
-        <input id="telefone" placeholder="Telefone (sem código país)" />
+        <input id="telefone" placeholder="Telefone" />
         <input id="valor" type="number" placeholder="Adicionar pagamento" />
 
         <div class="info-valores" id="totalPago"></div>
@@ -143,8 +142,10 @@
     </div>
 
     <script type="module">
+      // Import Firebase App
       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 
+      // 🔥 Importar Firestore
       import {
         getFirestore,
         doc,
@@ -154,25 +155,45 @@
         collection,
       } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
+      // Configuração (SEU NOVO PROJETO)
       const firebaseConfig = {
-        apiKey: "SUA_API_KEY",
-        authDomain: "rifa-fundacion.firebaseapp.com",
-        projectId: "rifa-fundacion",
-        storageBucket: "rifa-fundacion.firebasestorage.app",
-        messagingSenderId: "189625285000",
-        appId: "1:189625285000:web:a99bcfe045db4e2655223d",
+        apiKey: "AIzaSyA3b-d9IMw_-oBvSpmiBuoKQjobR_-7oo0",
+        authDomain: "rifa-fundacao.firebaseapp.com",
+        projectId: "rifa-fundacao",
+        storageBucket: "rifa-fundacao.firebasestorage.app",
+        messagingSenderId: "583453649279",
+        appId: "1:583453649279:web:37e692911bc7d512a1924a",
       };
 
+      // Inicializar Firebase
       const app = initializeApp(firebaseConfig);
+
+      // 🔥 Inicializar Firestore
       const db = getFirestore(app);
 
+      // 👉 Tornar global (SEM mexer no resto do seu código)
+      window.db = db;
+      window.doc = doc;
+      window.setDoc = setDoc;
+      window.getDocs = getDocs;
+      window.deleteDoc = deleteDoc;
+      window.collection = collection;
       const VALOR_TOTAL = 25;
+      const DATA_SORTEIO = "30/09/2026";
+      const LOCAL_SORTEIO = "TikTok @fundacion__esperanza";
 
       const rifa = document.getElementById("rifa");
       const modal = document.getElementById("modal");
 
       let numeroAtual = null;
       let dados = {};
+
+      function formatar(valor) {
+        return valor.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
+      }
 
       for (let i = 0; i <= 999; i++) {
         let numero = document.createElement("div");
@@ -224,12 +245,16 @@
 
       function atualizarValores() {
         let total = dados[numeroAtual]?.valor || 0;
-        let falta = VALOR_TOTAL - total;
+        let digitado = parseFloat(document.getElementById("valor").value) || 0;
+
+        let novoTotal = total + digitado;
+        let falta = VALOR_TOTAL - novoTotal;
 
         document.getElementById("totalPago").innerText =
-          "Total pago: R$ " + total;
+          "Total com este pagamento: " + formatar(novoTotal);
+
         document.getElementById("faltante").innerText =
-          "Falta: R$ " + (falta > 0 ? falta : 0);
+          "Falta: " + formatar(falta > 0 ? falta : 0);
       }
 
       function fechar() {
@@ -239,7 +264,7 @@
       async function salvar() {
         let nome = document.getElementById("nome").value;
         let telefone = document.getElementById("telefone").value;
-        let valorNovo = parseInt(document.getElementById("valor").value) || 0;
+        let valorNovo = parseFloat(document.getElementById("valor").value) || 0;
 
         let antigo = dados[numeroAtual] || {};
         let total = (antigo.valor || 0) + valorNovo;
@@ -286,18 +311,14 @@ Número: ${numeroAtual}
 Nome: ${d.nome || ""}
 Telefone: ${d.telefone}
 
-💰 Total pago: R$ ${d.valor || 0}
-❗ Falta: R$ ${Math.max(0, VALOR_TOTAL - (d.valor || 0))}
+💰 Total pago: ${formatar(d.valor || 0)}
+💸 Falta: ${formatar(Math.max(0, VALOR_TOTAL - (d.valor || 0)))}
 
-🎉 Sorteio:
-📅 Data: 30/09/2026
-📲 Ao vivo pelo TikTok
-👉 @fundacion__esperanza
-
-Boa sorte! 🍀`;
+📅 Sorteio: ${DATA_SORTEIO}
+📺 Acompanhe ao vivo em: ${LOCAL_SORTEIO}`;
 
         window.open(
-          `https://wa.me/57${d.telefone}?text=${encodeURIComponent(msg)}`
+          `https://wa.me/55${d.telefone}?text=${encodeURIComponent(msg)}`,
         );
       }
 
