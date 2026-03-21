@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>Rifa Fundação Esperança</title>
 
     <style>
@@ -55,52 +54,17 @@
         color: white;
       }
 
-      .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.4);
-      }
-
-      .modal-content {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        max-width: 350px;
-        margin: 12% auto;
-      }
-
-      input,
       button {
         width: 100%;
         padding: 10px;
         margin: 6px 0;
-      }
-
-      button {
         background: #3498db;
         color: white;
         border: none;
       }
 
-      .whatsapp {
-        background: #25d366;
-      }
-
-      .cancelar {
-        background: #e74c3c;
-      }
-
-      .zerar {
-        background: #555;
-      }
-
-      .info-valores {
-        margin: 10px 0;
-        font-weight: bold;
+      .admin {
+        background: #2c3e50;
       }
     </style>
   </head>
@@ -116,26 +80,11 @@
         <p><b>Valor por número:</b> R$ 25</p>
       </div>
 
+      <!-- 🔐 BOTÃO ADMIN -->
+      <button class="admin" onclick="login()">Login Administrador</button>
+
       <h3>Escolha seu número</h3>
       <div class="grid" id="rifa"></div>
-    </div>
-
-    <div class="modal" id="modal">
-      <div class="modal-content">
-        <h3 id="numeroSelecionado"></h3>
-
-        <input id="nome" placeholder="Nome" />
-        <input id="telefone" placeholder="Telefone" />
-        <input id="valor" type="number" placeholder="Adicionar pagamento" />
-
-        <div class="info-valores" id="totalPago"></div>
-        <div class="info-valores" id="faltante"></div>
-
-        <button onclick="salvar()">Salvar</button>
-        <button class="whatsapp" onclick="enviarWhats()">WhatsApp</button>
-        <button class="cancelar" onclick="fechar()">Cancelar</button>
-        <button class="zerar" onclick="zerarNumero()">Liberar número</button>
-      </div>
     </div>
 
     <script type="module">
@@ -150,6 +99,13 @@
         collection,
       } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
+      import {
+        getAuth,
+        signInWithPopup,
+        GoogleAuthProvider,
+        onAuthStateChanged
+      } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
       const firebaseConfig = {
         apiKey: "AIzaSyCkuWF4GInXQMRm7iGdLC-psSLASmKvS84",
         authDomain: "rifa-fundacion.firebaseapp.com",
@@ -162,14 +118,31 @@
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
 
-      const VALOR_TOTAL = 25;
+      // 🔐 AUTH
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider();
 
+      let usuarioLogado = null;
+
+      onAuthStateChanged(auth, (user) => {
+        usuarioLogado = user;
+        console.log("Logado:", user?.email);
+      });
+
+      async function login() {
+        await signInWithPopup(auth, provider);
+        alert("Login realizado!");
+      }
+
+      window.login = login;
+
+      const VALOR_TOTAL = 25;
       const rifa = document.getElementById("rifa");
-      const modal = document.getElementById("modal");
 
       let numeroAtual = null;
       let dados = {};
 
+      // criar números
       for (let i = 0; i <= 99; i++) {
         let numero = document.createElement("div");
         numero.textContent = String(i).padStart(2, "0");
@@ -202,42 +175,27 @@
       }
 
       function abrir(numero) {
+
+        // 🔒 BLOQUEIO
+        if (!usuarioLogado) {
+          alert("Somente administrador pode editar");
+          return;
+        }
+
         numeroAtual = numero;
-        modal.style.display = "block";
 
-        let d = dados[numero] || {};
+        let nome = prompt("Nome:");
+        let telefone = prompt("Telefone:");
+        let valor = parseInt(prompt("Valor pago:")) || 0;
 
-        document.getElementById("numeroSelecionado").innerText =
-          "Número: " + numero;
-        document.getElementById("nome").value = d.nome || "";
-        document.getElementById("telefone").value = d.telefone || "";
-        document.getElementById("valor").value = "";
-
-        document.getElementById("valor").oninput = atualizarValores;
-
-        atualizarValores();
+        salvar(numero, nome, telefone, valor);
       }
 
-      function atualizarValores() {
-        let total = dados[numeroAtual]?.valor || 0;
-        let falta = VALOR_TOTAL - total;
+      async function salvar(numero, nome, telefone, valorNovo) {
 
-        document.getElementById("totalPago").innerText =
-          "Total pago: R$ " + total;
-        document.getElementById("faltante").innerText =
-          "Falta: R$ " + (falta > 0 ? falta : 0);
-      }
+        if (!usuarioLogado) return;
 
-      function fechar() {
-        modal.style.display = "none";
-      }
-
-      async function salvar() {
-        let nome = document.getElementById("nome").value;
-        let telefone = document.getElementById("telefone").value;
-        let valorNovo = parseInt(document.getElementById("valor").value) || 0;
-
-        let antigo = dados[numeroAtual] || {};
+        let antigo = dados[numero] || {};
         let total = (antigo.valor || 0) + valorNovo;
 
         let estado = total >= VALOR_TOTAL ? "pago" : "pendente";
@@ -249,15 +207,17 @@
           estado,
         };
 
-        await setDoc(doc(db, "rifa", numeroAtual), novo);
+        await setDoc(doc(db, "rifa", numero), novo);
 
-        dados[numeroAtual] = novo;
+        dados[numero] = novo;
 
         atualizarTela();
-        fechar();
       }
 
       async function zerarNumero() {
+
+        if (!usuarioLogado) return;
+
         if (!confirm("Tem certeza que deseja liberar este número?")) return;
 
         await deleteDoc(doc(db, "rifa", numeroAtual));
@@ -265,33 +225,7 @@
         delete dados[numeroAtual];
 
         atualizarTela();
-        fechar();
       }
-
-      function enviarWhats() {
-        let d = dados[numeroAtual] || {};
-
-        if (!d.telefone) {
-          alert("Digite o telefone primeiro");
-          return;
-        }
-
-        let msg = `Rifa Fundação Esperança
-Número: ${numeroAtual}
-Nome: ${d.nome || ""}
-Telefone: ${d.telefone}
-Total pago: R$ ${d.valor || 0}
-Falta: R$ ${Math.max(0, VALOR_TOTAL - (d.valor || 0))}`;
-
-        window.open(
-          `https://wa.me/55${d.telefone}?text=${encodeURIComponent(msg)}`
-        );
-      }
-
-      window.salvar = salvar;
-      window.fechar = fechar;
-      window.zerarNumero = zerarNumero;
-      window.enviarWhats = enviarWhats;
 
       carregar();
     </script>
