@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rifa Fundação Esperança</title>
+
+    <style>
+      body {
+        font-family: Arial;
+        background: #f4f6f9;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: auto;
+      }
+
+      .info {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+        gap: 8px;
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+
+      .numero {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .pago {
+        background: #27ae60;
+        color: white;
+      }
+
+      .pendente {
+        background: #f39c12;
+        color: white;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        top: 0;
+        left: 0;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 20px;
+        margin: 10% auto;
+        border-radius: 10px;
+        max-width: 350px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      input,
+      button {
+        width: 100%;
+        padding: 12px 16px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+      }
+
+      input {
+        background: #f5f5f5;
+        border: 1px solid #e0e0e0;
+      }
+
+      .whatsapp {
+        background: #25d366;
+        color: white;
+      }
+
+      .cancelar {
+        background: #e74c3c;
+        color: white;
+      }
+
+      .zerar {
+        background: #2c3e50;
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="info">
+        <h1>Rifa Fundação Esperança</h1>
+
+        <button onclick="login()">Login com Google</button>
+        <button onclick="logout()">Sair</button>
+
+        <!-- BOTÃO ADMIN -->
+        <button id="verLista" onclick="abrirLista()" style="display: none">
+          Ver Compradores
+        </button>
+
+        <p>
+          <b>Sorteio:</b> sera realizado no dia 30/09/2026 ao vivo no TikTok<br />
+          @fundacion__esperanza
+        </p>
+
+        <p>
+          <b>Premio:</b> 5000 R$
+        </p>
+
+        <p><b>Valor:</b> R$ 25</p>
+      </div>
+
+      <div class="grid" id="rifa"></div>
+    </div>
+
+    <!-- MODAL COMPRA -->
+    <div class="modal" id="modal">
+      <div class="modal-content">
+        <h3 id="numeroSelecionado"></h3>
+        <input id="nome" placeholder="Nome" />
+        <input id="telefone" placeholder="Telefone" />
+        <input id="valor" type="number" placeholder="Pagamento" />
+
+        <div id="totalPago"></div>
+        <div id="faltante"></div>
+
+        <button onclick="salvar()">Salvar</button>
+        <button class="whatsapp" onclick="enviarWhats()">WhatsApp</button>
+        <button class="cancelar" onclick="fechar()">Cancelar</button>
+        <button class="zerar" onclick="zerarNumero()">Liberar</button>
+      </div>
+    </div>
+
+    <!-- MODAL LISTA -->
+    <div class="modal" id="modalLista">
+      <div class="modal-content" style="max-width: 600px">
+        <h3>Lista de Compradores</h3>
+        <div
+          id="listaCompradores"
+          style="text-align: left; max-height: 400px; overflow: auto"
+        ></div>
+        <button onclick="fecharLista()">Fechar</button>
+      </div>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        setDoc,
+        getDocs,
+        deleteDoc,
+        collection,
+      } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+      import {
+        getAuth,
+        signInWithPopup,
+        GoogleAuthProvider,
+        signOut,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyA3b-d9IMw_-oBvSpmiBuoKQjobR_-7oo0",
+        authDomain: "rifa-fundacao.firebaseapp.com",
+        projectId: "rifa-fundacao",
+        storageBucket: "rifa-fundacao.firebasestorage.app",
+        messagingSenderId: "583453649279",
+        appId: "1:583453649279:web:37e692911bc7d512a1924a",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider();
+
+      const ADMIN_EMAIL = "heiderscheidt28@gmail.com";
+
+      let usuarioLogado = false;
+
+      const btnLista = document.getElementById("verLista");
+
+      onAuthStateChanged(auth, (user) => {
+        if (user && user.email === ADMIN_EMAIL) {
+          usuarioLogado = true;
+          btnLista.style.display = "block";
+        } else {
+          usuarioLogado = false;
+          btnLista.style.display = "none";
+          if (user) alert("Você não é administrador");
+        }
+      });
+
+      window.login = async () => {
+        try {
+          const result = await signInWithPopup(auth, provider);
+          alert("Logado como: " + result.user.email);
+        } catch (error) {
+          alert("Erro no login");
+        }
+      };
+
+      window.logout = () => signOut(auth);
+
+      const rifa = document.getElementById("rifa");
+      const modal = document.getElementById("modal");
+
+      let numeroAtual = null;
+      let dados = {};
+
+      function formatar(v) {
+        return v.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
+      }
+
+      for (let i = 0; i <= 400; i++) {
+        let n = document.createElement("div");
+        n.textContent = String(i).padStart(2, "0");
+        n.classList.add("numero");
+        n.onclick = () => abrir(n.textContent);
+        rifa.appendChild(n);
+      }
+
+      async function carregar() {
+        const snap = await getDocs(collection(db, "rifa"));
+        snap.forEach((d) => (dados[d.id] = d.data()));
+        atualizarTela();
+      }
+
+      function atualizarTela() {
+        document.querySelectorAll(".numero").forEach((n) => {
+          let d = dados[n.textContent];
+          n.classList.remove("pago", "pendente");
+          if (d) n.classList.add(d.estado);
+        });
+      }
+
+      function abrir(num) {
+        numeroAtual = num;
+        modal.style.display = "block";
+        numeroSelecionado.innerText = "Número " + num;
+
+        let d = dados[num] || {};
+        nome.value = d.nome || "";
+        telefone.value = d.telefone || "";
+        valor.value = "";
+        atualizarValores();
+      }
+
+      valor.oninput = atualizarValores;
+
+      function atualizarValores() {
+        let total = dados[numeroAtual]?.valor || 0;
+        let digitado = parseFloat(valor.value) || 0;
+        let novo = total + digitado;
+
+        totalPago.innerText = "Total: " + formatar(novo);
+        faltante.innerText = "Falta: " + formatar(Math.max(0, 25 - novo));
+      }
+
+      window.salvar = async () => {
+        if (!usuarioLogado) return alert("Só admin");
+
+        let antigo = dados[numeroAtual] || {};
+        let total = (antigo.valor || 0) + (parseFloat(valor.value) || 0);
+
+        let novo = {
+          nome: nome.value || antigo.nome || "",
+          telefone: telefone.value || antigo.telefone || "",
+          valor: total,
+          estado: total >= 25 ? "pago" : "pendente",
+        };
+
+        await setDoc(doc(db, "rifa", numeroAtual), novo);
+        dados[numeroAtual] = novo;
+        atualizarTela();
+        fechar();
+      };
+
+      window.zerarNumero = async () => {
+        if (!usuarioLogado) return alert("Só admin");
+
+        await deleteDoc(doc(db, "rifa", numeroAtual));
+        delete dados[numeroAtual];
+        atualizarTela();
+        fechar();
+      };
+
+      window.fechar = () => (modal.style.display = "none");
+
+      window.enviarWhats = () => {
+        let d = dados[numeroAtual] || {};
+
+        let mensagem = `🎟️ *Rifa Fundação Esperança*
+
+📌 *Número:* ${numeroAtual}
+👤 *Nome:* ${d.nome || "-"}
+📱 *Telefone:* ${d.telefone || "-"}
+
+💰 *Valor do número:* R$ 25
+💵 *Total pago:* ${formatar(d.valor || 0)}
+❗ *Falta pagar:* ${formatar(Math.max(0, 25 - (d.valor || 0)))}
+
+🎁 *Prêmio:* R$ 5.000
+
+📅 *Sorteio:*
+30/09/2026 ao vivo no TikTok
+@fundacion__esperanza
+
+🙏 Boa sorte e obrigado por participar!`;
+
+        let url = `https://wa.me/55${d.telefone}?text=${encodeURIComponent(mensagem)}`;
+        window.open(url);
+      };
+
+      // LISTA DE COMPRADORES
+      const modalLista = document.getElementById("modalLista");
+      const listaCompradores = document.getElementById("listaCompradores");
+
+      window.abrirLista = () => {
+        if (!usuarioLogado) return alert("Só admin");
+
+        listaCompradores.innerHTML = "";
+
+        Object.keys(dados).forEach((num) => {
+          let d = dados[num];
+
+          let item = document.createElement("div");
+          item.style.padding = "10px";
+          item.style.borderBottom = "1px solid #ddd";
+
+          item.innerHTML = `
+            <b>Número:</b> ${num}<br>
+            <b>Nome:</b> ${d.nome || "-"}<br>
+            <b>Telefone:</b> ${d.telefone || "-"}<br>
+            <b>Total Pago:</b> ${formatar(d.valor || 0)}<br>
+            <b>Status:</b> ${d.estado}
+          `;
+
+          listaCompradores.appendChild(item);
+        });
+
+        modalLista.style.display = "block";
+      };
+
+      window.fecharLista = () => {
+        modalLista.style.display = "none";
+      };
+
+      carregar();
+    </script>
+  </body>
+</html>
