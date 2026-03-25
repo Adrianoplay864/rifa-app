@@ -3,26 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Confraria dos Miados e Latidos | Nossos Gatos Resgatados</title>
+  <title>Fundação Esperança | Nossos Gatos Resgatados</title>
   <meta name="description" content="Ajude animais resgatados com doações, castração, adoção e voluntariado. Conheça nossos gatinhos e suas histórias.">
+
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       background-color: #fffbf7;
       color: #2c2418;
       line-height: 1.5;
     }
 
-    h1, h2, h3 {
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
+    h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; }
 
     h2 {
       font-size: 2rem;
@@ -41,11 +35,7 @@
       border-radius: 4px;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
     .btn-primary {
       display: inline-block;
@@ -58,260 +48,45 @@
       transition: all 0.25s ease;
       border: none;
       cursor: pointer;
-      font-size: 1rem;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     }
 
     .btn-primary:hover {
       background-color: #d94716;
       transform: translateY(-2px);
-      box-shadow: 0 8px 18px rgba(240, 90, 40, 0.25);
     }
 
     .hero {
       background-image: url(IMG_20241111_194123.jpg);
-      background-position: center 30%;
-      background-repeat: no-repeat;
+      background-position: center;
       background-size: cover;
-      position: relative;
       min-height: 85vh;
       display: flex;
       align-items: center;
       text-align: center;
       color: white;
+      position: relative;
     }
 
     .hero-overlay {
       position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0,0,0,0.3);
     }
 
     .hero-content {
       position: relative;
       z-index: 2;
       max-width: 800px;
-      margin: 0 auto;
+      margin: auto;
       padding: 2rem;
     }
 
-    .hero h1 {
-      font-size: 3.2rem;
-      margin-bottom: 1rem;
-      font-weight: 800;
-    }
+    .hero h1 { font-size: 3rem; margin-bottom: 1rem; }
 
-    .hero p {
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-      opacity: 0.95;
-    }
-
-    .pilares {
-      padding: 80px 20px;
-      background: #ffffff;
-      text-align: center;
-    }
+    .pilares { padding: 80px 20px; text-align: center; background: #fff; }
 
     .pilares-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 40px;
-      justify-content: center;
-      margin-top: 48px;
-    }
-
-    .pilar-card {
-      background: #fef9f2;
-      border-radius: 32px;
-      padding: 32px 24px;
-      max-width: 280px;
-      width: 100%;
-      transition: all 0.2s;
-      border: 1px solid #ffe4cc;
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02);
-    }
-
-    .pilar-card:hover {
-      transform: translateY(-6px);
-      border-color: #f5a65b;
-    }
-
-    .pilar-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    .pilar-card h3 {
-      font-size: 1.7rem;
-      color: #e2531e;
-      margin-bottom: 12px;
-    }
-
-    .pilar-card p {
-      color: #4a3b2c;
-      font-size: 0.95rem;
-    }
-
-    .doe-destaque {
-      background: #fef3e8;
-      padding: 60px 20px;
-      text-align: center;
-      border-top: 1px solid #ffe2cc;
-      border-bottom: 1px solid #ffe2cc;
-    }
-
-    .doe-destaque h2 {
-      font-size: 2.4rem;
-      margin-bottom: 16px;
-    }
-
-    .doe-destaque h2:after {
-      width: 80px;
-      background: #f05a28;
-    }
-
-    .impacto-real {
-      background: #2f2a24;
-      background-image: radial-gradient(circle at 10% 30%, rgba(245, 166, 91, 0.08) 2%, transparent 2.5%);
-      background-size: 28px 28px;
-      color: white;
-      padding: 70px 20px;
-      text-align: center;
-    }
-
-    .impacto-real h2 {
-      color: #ffd6b5;
-    }
-
-    .impacto-real h2:after {
-      background: #f5a65b;
-    }
-
-    .numeros-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 48px;
-      margin-top: 48px;
-    }
-
-    .stat-item {
-      text-align: center;
-      min-width: 180px;
-    }
-
-    .stat-number {
-      font-size: 3.2rem;
-      font-weight: 800;
-      color: #ffae70;
-      line-height: 1.2;
-    }
-
-    .stat-label {
-      font-size: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 500;
-      opacity: 0.85;
-      margin-top: 8px;
-    }
-
-    .detalhe-impacto {
-      max-width: 700px;
-      margin: 32px auto 0;
-      font-size: 0.95rem;
-      background: rgba(255, 255, 240, 0.1);
-      padding: 16px 24px;
-      border-radius: 60px;
-      backdrop-filter: blur(2px);
-    }
-
-    /* GALERIA COM FOTOS DOS GATOS - ESTILO MODERNO COM IMAGENS REAIS */
-    .galeria-resgatados {
-      padding: 60px 20px;
-      background: #ffffff;
-      text-align: center;
-    }
-
-    .mini-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 32px;
-      margin-top: 48px;
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .animal-card {
-      background: #fef8f0;
-      border-radius: 32px;
-      padding: 24px 20px 28px;
-      transition: all 0.3s ease;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-      border: 1px solid #ffe2c7;
-      cursor: pointer;
-    }
-
-    .animal-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 32px rgba(240, 90, 40, 0.15);
-      border-color: #f5a65b;
-    }
-
-    /* Estilo para as fotos dos gatos - imagens reais e adoráveis */
-    .cat-photo {
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin: 0 auto 18px;
-      display: block;
-      border: 4px solid #ffd8b5;
-      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
-      transition: transform 0.3s, border-color 0.2s;
-      background-color: #f0e4d6;
-    }
-
-    .animal-card:hover .cat-photo {
-      transform: scale(1.03);
-      border-color: #f08c4a;
-    }
-
-    .animal-card strong {
-      font-size: 1.5rem;
-      color: #d64b1a;
-      display: block;
-      margin: 12px 0 6px;
-      font-weight: 800;
-    }
-
-    .animal-card .story {
-      font-size: 0.9rem;
-      color: #7a5a3e;
-      margin-top: 8px;
-      line-height: 1.4;
-      font-weight: 500;
-    }
-
-    .animal-card small {
-      display: block;
-      margin-top: 6px;
-      font-size: 0.75rem;
-      color: #b47c48;
-      font-weight: 500;
-    }
-
-    .formas-ajuda {
-      padding: 70px 20px;
-      background: #fff9f2;
-    }
-
-    .flex-ajuda {
       display: flex;
       flex-wrap: wrap;
       gap: 40px;
@@ -319,313 +94,133 @@
       margin-top: 40px;
     }
 
-    .ajuda-card {
-      background: white;
-      border-radius: 32px;
-      padding: 32px;
-      flex: 1;
-      min-width: 260px;
-      max-width: 380px;
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.03);
-      border: 1px solid #ffebda;
-      text-align: center;
+    .pilar-card {
+      background: #fef9f2;
+      padding: 30px;
+      border-radius: 25px;
+      max-width: 280px;
     }
 
-    .ajuda-card h3 {
-      font-size: 1.7rem;
-      color: #e2531e;
-      margin-bottom: 16px;
+    .galeria-resgatados { padding: 60px 20px; text-align: center; }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
     }
 
-    .btn-secundario {
-      background: transparent;
-      border: 2px solid #f05a28;
-      color: #f05a28;
-      padding: 10px 28px;
-      border-radius: 40px;
-      font-weight: 700;
-      text-decoration: none;
-      display: inline-block;
-      transition: 0.2s;
+    .animal-card {
+      background: #fef8f0;
+      border-radius: 25px;
+      padding: 20px;
     }
 
-    .btn-secundario:hover {
-      background: #f05a28;
-      color: white;
-    }
-
-    .embaixador {
-      background: linear-gradient(95deg, #ffeada 0%, #fff3e8 100%);
-      padding: 60px 20px;
-      text-align: center;
-      border-bottom: 1px solid #ffdbb5;
-    }
-
-    .embaixador-flex {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 32px;
-      margin-top: 24px;
-    }
-
-    .embaixador-item {
-      background: white;
-      border-radius: 56px;
-      padding: 12px 28px;
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 600;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    }
-
-    .contato-whats {
-      background: #25d36620;
-      border-radius: 48px;
-      padding: 8px 24px;
-      font-size: 1.1rem;
+    .cat-photo {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: auto;
+      display: block;
     }
 
     footer {
       background: #1f2a1b;
       color: #d4cdb2;
       text-align: center;
-      padding: 32px 20px;
-      font-size: 0.85rem;
-    }
-
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 28px;
-      margin-bottom: 24px;
-    }
-
-    .footer-links a {
-      color: #f5cba0;
-      text-decoration: none;
-    }
-
-    .footer-links a:hover {
-      text-decoration: underline;
-    }
-
-    @media (max-width: 680px) {
-      .hero h1 {
-        font-size: 2.3rem;
-      }
-      .stat-number {
-        font-size: 2.4rem;
-      }
-      .cat-photo {
-        width: 130px;
-        height: 130px;
-      }
-      .mini-grid {
-        gap: 20px;
-      }
+      padding: 30px;
     }
   </style>
 </head>
+
 <body>
 
-  <section class="hero">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <h1>E se seu melhor amigo estivesse abandonado?</h1>
-      <p>
-        ONG Fundação Esperança. Com a ajuda de vocês hoje estamos seguros e ganhamos
-        família para nos proteger. Mas nas ruas, já passamos medo, fome e
-        solidão. Cada doação muda nossa história.
-      </p>
-      <a href="index2.html" class="btn-primary">QUERO AJUDAR AGORA</a>
-    </div>
-  </section>
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>E se o seu melhor amigo estivesse abandonado?</h1>
+    <p>
+      ONG Fundação Esperança. Com a ajuda de vocês, hoje estamos seguros e ganhamos
+      uma família para nos proteger. Mas, nas ruas, já passamos medo, fome e solidão.
+      Cada doação muda a nossa história.
+    </p>
+    <a href="index2.html" class="btn-primary">QUERO AJUDAR AGORA</a>
+  </div>
+</section>
 
-  <section class="pilares">
-    <div class="container">
-      <h2>NOSSOS PILARES</h2>
-      <p style="margin-top: 8px; color: #5e4b34">
-        Atuamos em 3 frentes de trabalho que transformam realidades
-      </p>
-      <div class="pilares-grid">
-        <div class="pilar-card">
-          <div class="pilar-icon">🏥✂️</div>
-          <h3>Castração</h3>
-          <p>
-            Hoje estamos todos castrados, porém sempre que chegam mais animaizinhos resgatados precisamos castrá-los.
-          </p>
-        </div>
-        <div class="pilar-card">
-          <div class="pilar-icon">🐱❤️</div>
-          <h3>Resgate e Adoção</h3>
-          <p>
-            Tirar das ruas, cuidar da saúde e encontrar uma família amorosa
-            para cada peludinho.
-          </p>
-        </div>
-        <div class="pilar-card">
-          <div class="pilar-icon">📚🧠</div>
-          <h3>Educação da Sociedade</h3>
-          <p>
-            A conscientização de cada um transforma a sociedade e garante um
-            futuro melhor.
-          </p>
-        </div>
+<section class="pilares">
+  <div class="container">
+    <h2>NOSSOS PILARES</h2>
+    <p>Atuamos em 3 frentes de trabalho que transformam realidades</p>
+
+    <div class="pilares-grid">
+      <div class="pilar-card">
+        <h3>Castração</h3>
+        <p>Todos estão castrados, mas novos resgates exigem novos cuidados.</p>
+      </div>
+
+      <div class="pilar-card">
+        <h3>Resgate e Adoção</h3>
+        <p>Retiramos das ruas, cuidamos e buscamos uma família amorosa.</p>
+      </div>
+
+      <div class="pilar-card">
+        <h3>Educação</h3>
+        <p>A conscientização transforma a sociedade.</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="doe-destaque">
-    <div class="container">
-      <h2>🐾 SEJA PARTE DESSE LINDO TRABALHO</h2>
-      <p style="font-size: 1.2rem; margin-bottom: 16px">
-        Sua contribuição direta salva vidas
-      </p>
-      <a href="#" class="btn-primary" style="background: #2d5f2c; margin-top: 16px"
-        >DOE AGORA QUALQUER VALOR</a>
-    </div>
-  </section>
+<section class="galeria-resgatados">
+  <div class="container">
+    <h2>Nossos gatinhos resgatados</h2>
 
-  <section class="impacto-real">
-    <div class="container">
-      <h2>🇧🇷 IMPACTO DO TRABALHO</h2>
-      <div class="numeros-grid">
-        <div class="stat-item">
-          <div class="stat-number">30 milhões</div>
-          <div class="stat-label">É a estimativa de animais abandonados no Brasil</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">4.100+</div>
-          <div class="stat-label">Gatinhos foram resgatados pela Confraria</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">15.000+</div>
-          <div class="stat-label">Animais já foram castrados com a sua doação</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">3.900+</div>
-          <div class="stat-label">Gatinhos conseguiram nova família</div>
-        </div>
+    <div class="mini-grid">
+
+      <div class="animal-card">
+        <img class="cat-photo" src="IMG_20250724_185907.jpg">
+        <strong>Blanquita</strong>
+        <div class="story">Chegou filhote e doente na fundação. Hoje está saudável e carinhosa.</div>
+        <small>Resgatada em 2020</small>
       </div>
-      <div class="detalhe-impacto">
-        🐕 +500 atendimentos de emergência e resgates realizados só neste ano. Cada número é uma vida transformada.
+
+      <div class="animal-card">
+        <img class="cat-photo" src="IMG_20250805_073858.jpg">
+        <strong>Katy</strong>
+        <div class="story">A mais velhinha da casa. Foi abandonada em um apartamento.</div>
+        <small>Castrada e feliz</small>
       </div>
-    </div>
-  </section>
 
-  <!-- GALERIA COM FOTOS REAIS DOS GATOS - SUBSTITUÍMOS EMOJIS POR FOTOS DE GATOS LINDOOS -->
-  <section class="galeria-resgatados">
-    <div class="container">
-      <h2>🐱 Nossos gatinhos resgatados</h2>
-      <p style="margin-bottom: 10px; color: #6b4f34;">
-        Conheça alguns dos heróis de quatro patas que hoje vivem seguros e amados. Cada um tem uma história especial 💛
-      </p>
-      <div class="mini-grid">
-        
-        <!-- THOR - gato preto e branco, imponente -->
-        <div class="animal-card">
-          <img class="cat-photo" src="IMG_20250724_185907.jpg" alt="Gato preto e branco Thor">
-          <strong>Thor</strong>
-          <div class="story">⚡ Resgatado da fome e do frio | Hoje é um guardião brincalhão</div>
-          <small>Resgatado em 2024</small>
-        </div>
-        
-        <!-- FRAJOLA - gato frajola clássico e charmoso -->
-        <div class="animal-card">
-          <img class="cat-photo" src="IMG_20250805_073858.jpg" alt="Gato frajola Frajola">
-          <strong>Frajola</strong>
-          <div class="story">✨ Castrado e cheio de energia | Adora carinho e sonecas</div>
-          <small>Castrado e feliz</small>
-        </div>
-        
-        <!-- MEL - gatinha amarela doce -->
-        <div class="animal-card">
-          <img class="cat-photo" src="IMG_20251123_200818.jpg" alt="Gata amarela Mel">
-          <strong>Mel</strong>
-          <div class="story">🍯 Doce e manhosa | Encontrou família acolhedora após meses de tratamento</div>
-          <small>Família acolhedora desde 2024</small>
-        </div>
-        
-        <!-- THORIN - gato cinza/azul russo, nosso embaixador -->
-        <div class="animal-card">
-          <img class="cat-photo" src="IMG_20260316_075900.jpg" alt="Gato cinza Thorin embaixador">
-          <strong>Thorin</strong>
-          <div class="story">🌟 Embaixador da causa | Superou medo e doenças | Agora ajuda outros animais</div>
-          <small>Nosso herói</small>
-        </div>
-
-        <!-- LOLA - nova integrante tricolor -->
-        <div class="animal-card">
-          <img class="cat-photo" src="IMG_20260130_213654.jpg" alt="Gata tricolor Lola">
-          <strong>Lola</strong>
-          <div class="story">🌸 Encontrada abandonada | Já está castrada e aguarda um lar definitivo</div>
-          <small>Em processo de adoção</small>
-        </div>
+      <div class="animal-card">
+        <img class="cat-photo" src="IMG_20251123_200818.jpg">
+        <strong>Mel</strong>
+        <div class="story">Não gosta de remédios. Acreditamos que tenha necessidades especiais.</div>
+        <small>Resgatada há 2 anos</small>
       </div>
-      <p style="margin-top: 40px; font-style: italic; color: #c27e3a; font-weight: 500;">
-        💛 Cada foto é um pedacinho da nossa missão. Ajude mais gatinhos como eles a terem um final feliz.
-      </p>
-    </div>
-  </section>
 
-  <section class="formas-ajuda">
-    <div class="container">
-      <h2>🐾 AJUDE A CONFRARIA DE OUTRAS FORMAS</h2>
-      <div class="flex-ajuda">
-        <div class="ajuda-card">
-          <div class="pilar-icon">🧾📄</div>
-          <h3>NOTAS FISCAIS</h3>
-          <p>Doe suas notas fiscais Paulistas e ajude sem custo extra. A cada nota destinada você transforma em recurso para castrações.</p>
-          <a href="#" class="btn-secundario">Saiba como doar NF</a>
-        </div>
-        <div class="ajuda-card">
-          <div class="pilar-icon">🤝🧡</div>
-          <h3>VOLUNTARIADO</h3>
-          <p>Se você mora em São Paulo, entre em contato e receba o passo a passo para tornar-se um voluntário.</p>
-          <a href="#" class="btn-secundario">SEJA VOLUNTÁRIO(A)</a>
-        </div>
+      <div class="animal-card">
+        <img class="cat-photo" src="IMG_20260316_075900.jpg">
+        <strong>Negrito</strong>
+        <div class="story">Muito carinhoso. Superou medo e doenças.</div>
+        <small>Nosso mascote</small>
       </div>
-      <div style="margin-top: 40px; text-align: center;">
-        <p style="font-weight: 500;">Seu apoio pode vir de diferentes modos, inclusive colocando a mão na massa!</p>
-        <a href="#" class="btn-primary" style="background:#e05a2a; margin-top: 12px;">CONHEÇA OPORTUNIDADES</a>
+
+      <div class="animal-card">
+        <img class="cat-photo" src="IMG_20260130_213654.jpg">
+        <strong>Caríaca</strong>
+        <div class="story">Muito carinhosa. Sempre pede carinho.</div>
+        <small>Adora caçar bichinhos</small>
       </div>
-    </div>
-  </section>
 
-  <section class="embaixador">
-    <div class="container">
-      <h2>🌟 SEJA DOADOR | SEJA EMBAIXADOR</h2>
-      <div class="embaixador-flex">
-        <div class="embaixador-item">🐱 Doe mensal e vire um padrinho</div>
-        <div class="embaixador-item">📢 Compartilhe nossa causa</div>
-        <div class="embaixador-item contato-whats">📞 (11) 93061-9159</div>
-      </div>
-      <p style="margin-top: 28px;">Transforme vidas com atitudes simples. Vem fazer parte do time que salva patinhas.</p>
     </div>
-  </section>
+  </div>
+</section>
 
-  <footer>
-    <div class="footer-links">
-      <a href="#">TERMOS DE USO</a>
-      <a href="#">POLÍTICA DE PRIVACIDADE</a>
-      <a href="#">CONTATO</a>
-      <a href="#">TRANSPARÊNCIA</a>
-    </div>
-    <div style="margin-bottom: 8px">© 2026 Confraria dos Miados e Latidos — Todos os direitos reservados.</div>
-    <div style="font-size: 0.7rem; opacity: 0.7;">Feito com amor por voluntários | CNPJ 30.123.456/0001-99</div>
-  </footer>
+<footer>
+  <div>© 2026 Fundação Esperança — Todos os direitos reservados.</div>
+</footer>
 
-  <script>
-    
-    const linkContato = document.querySelector('.contato-whats');
-    if(linkContato) {
-      linkContato.addEventListener('click', () => {
-        alert('Contato: (47) 98483-9971 | Doe ou seja voluntário e ajude a mudar vidas.');
-      });
-    }
-  </script>
 </body>
 </html>
