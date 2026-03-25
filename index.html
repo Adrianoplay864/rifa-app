@@ -242,7 +242,7 @@
         });
       }
 
-      for (let i = 0; i <= 999; i++) {
+      for (let i = 0; i <= 400; i++) {
         let n = document.createElement("div");
         n.textContent = String(i).padStart(2, "0");
         n.classList.add("numero");
@@ -330,9 +330,7 @@
 💵 *Total pago:* ${formatar(d.valor || 0)}
 ❗ *Falta pagar:* ${formatar(Math.max(0, 25 - (d.valor || 0)))}
 
-🎁 *Prêmios:*
-1° - R$ 5.000
-2° - R$ 2.000
+🎁 *Prêmio:* R$ 5.000
 
 📅 *Sorteio:*
 30/09/2026 ao vivo no TikTok
