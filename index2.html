@@ -289,3 +289,128 @@
             else if (d.estado === "pendente") reservados++;
           }
         });
+
+        const totalNumeros = 401; // de 0 a 400
+        const disponiveis = totalNumeros - vendidos - reservados;
+
+        document.getElementById("vendidos").innerText = vendidos;
+        document.getElementById("reservados").innerText = reservados;
+        document.getElementById("disponiveis").innerText = disponiveis;
+      }
+
+      function abrir(num) {
+        numeroAtual = num;
+        modal.style.display = "block";
+        numeroSelecionado.innerText = "Número " + num;
+
+        let d = dados[num] || {};
+        nome.value = d.nome || "";
+        telefone.value = d.telefone || "";
+        valor.value = "";
+        atualizarValores();
+      }
+
+      valor.oninput = atualizarValores;
+
+      function atualizarValores() {
+        let total = dados[numeroAtual]?.valor || 0;
+        let digitado = parseFloat(valor.value) || 0;
+        let novo = total + digitado;
+
+        totalPago.innerText = "Total: " + formatar(novo);
+        faltante.innerText = "Falta: " + formatar(Math.max(0, 25 - novo));
+      }
+
+      window.salvar = async () => {
+        if (!usuarioLogado) return alert("Só admin");
+
+        let antigo = dados[numeroAtual] || {};
+        let total = (antigo.valor || 0) + (parseFloat(valor.value) || 0);
+
+        let novo = {
+          nome: nome.value || antigo.nome || "",
+          telefone: telefone.value || antigo.telefone || "",
+          valor: total,
+          estado: total >= 25 ? "pago" : "pendente",
+        };
+
+        await setDoc(doc(db, "rifa", numeroAtual), novo);
+        dados[numeroAtual] = novo;
+        atualizarTela();
+        fechar();
+      };
+
+      window.zerarNumero = async () => {
+        if (!usuarioLogado) return alert("Só admin");
+
+        await deleteDoc(doc(db, "rifa", numeroAtual));
+        delete dados[numeroAtual];
+        atualizarTela();
+        fechar();
+      };
+
+      window.fechar = () => (modal.style.display = "none");
+
+      window.enviarWhats = () => {
+        let d = dados[numeroAtual] || {};
+
+        let mensagem = `🎟️ *Rifa Fundação Esperança*
+
+📌 *Número:* ${numeroAtual}
+👤 *Nome:* ${d.nome || "-"}
+📱 *Telefone:* ${d.telefone || "-"}
+
+💰 *Valor do número:* R$ 25
+💵 *Total pago:* ${formatar(d.valor || 0)}
+❗ *Falta pagar:* ${formatar(Math.max(0, 25 - (d.valor || 0)))}
+
+🎁 *Prêmio:* R$ 5.000
+
+📅 *Sorteio:*
+30/09/2026 ao vivo no TikTok
+@fundacion__esperanza
+
+🙏 Boa sorte e obrigado por participar!`;
+
+        let url = `https://wa.me/55${d.telefone}?text=${encodeURIComponent(mensagem)}`;
+        window.open(url);
+      };
+
+      // LISTA DE COMPRADORES
+      const modalLista = document.getElementById("modalLista");
+      const listaCompradores = document.getElementById("listaCompradores");
+
+      window.abrirLista = () => {
+        if (!usuarioLogado) return alert("Só admin");
+
+        listaCompradores.innerHTML = "";
+
+        Object.keys(dados).forEach((num) => {
+          let d = dados[num];
+
+          let item = document.createElement("div");
+          item.style.padding = "10px";
+          item.style.borderBottom = "1px solid #ddd";
+
+          item.innerHTML = `
+            <b>Número:</b> ${num}<br>
+            <b>Nome:</b> ${d.nome || "-"}<br>
+            <b>Telefone:</b> ${d.telefone || "-"}<br>
+            <b>Total Pago:</b> ${formatar(d.valor || 0)}<br>
+            <b>Status:</b> ${d.estado}
+          `;
+
+          listaCompradores.appendChild(item);
+        });
+
+        modalLista.style.display = "block";
+      };
+
+      window.fecharLista = () => {
+        modalLista.style.display = "none";
+      };
+
+      carregar();
+    </script>
+  </body>
+</html>
